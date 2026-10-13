@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kopiku - Kasir Pembayaran Lengkap</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #6F4E37;
+      --primary-dark: #4A3221;
+      --primary-light: #8B5E3C;
+      --accent: #D4A373;
+      --accent-hover: #e0b48a;
+      --bg: #1A120B;
+      --card: #2C2118;
+      --card-hover: #3A2D22;
+      --text: #F5EDE4;
+      --muted: #A89F91;
+      --success: #4CAF50;
+      --danger: #E53935;
+      --warning: #FFB300;
+      --info: #29B6F6;
+      --border: #3d2b1f;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.45);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.7rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .logo i {
+      color: var(--accent);
+      font-size: 1.9rem;
+    }
+
+    .logo span {
+      background: linear-gradient(90deg, #fff, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 9px 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #1A120B;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(212,163,115,0.35);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+    }
+    .btn-outline:hover {
+      background: var(--accent);
+      color: #1A120B;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+    .btn-danger:hover {
+      background: #c62828;
+      transform: translateY(-2px);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+    .btn-success:hover {
+      background: #388E3C;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.82rem;
+    }
+
+    /* ===== MAIN LAYOUT ===== */
+    .main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      height: calc(100vh - 64px);
+    }
+
+    /* ===== LEFT: PRODUCTS ===== */
+    .products-section {
+      flex: 1;
+      padding: 20px 22px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .search-filter {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 16px 12px 44px;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      background: var(--card);
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-box input:focus {
+      border-color: var(--accent);
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+    }
+
+    .categories {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .cat-btn {
+      padding: 9px 16px;
+      border-radius: 30px;
+      border: 2px solid transparent;
+      background: var(--card);
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.88rem;
+      transition: all 0.2s;
+    }
+
+    .cat-btn.active, .cat-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+      gap: 16px;
+      padding-bottom: 20px;
+    }
+
+    .product-card {
+      background: var(--card);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      border: 2px solid transparent;
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent);
+      box-shadow: 0 14px 32px rgba(0,0,0,0.4);
+    }
+
+    .product-img-wrap {
+      height: 130px;
+      overflow: hidden;
+      position: relative;
+      background: #231910;
+    }
+
+    .product-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s;
+    }
+
+    .product-card:hover .product-img-wrap img {
+      transform: scale(1.08);
+    }
+
+    .stock-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    .stock-badge.low {
+      background: var(--danger);
+    }
+
+    .product-info {
+      padding: 12px 14px 14px;
+    }
+
+    .product-name {
+      font-weight: 600;
+      font-size: 0.98rem;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .product-category {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .product-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .product-price {
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 1.05rem;
+    }
+
+    .add-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: none;
+      color: white;
+      font-size: 1.05rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .add-btn:hover {
+      background: var(--accent);
+      color: #1A120B;
+      transform: scale(1.12);
+    }
+
+    .add-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ===== RIGHT: CART ===== */
+    .cart-section {
+      width: 370px;
+      background: var(--card);
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .cart-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-header h2 {
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cart-count {
+      background: var(--accent);
+      color: #1A120B;
+      min-width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0 6px;
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 10px;
+      background: #231910;
+      padding: 10px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      align-items: center;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .cart-item-img {
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #3d2b1f;
+    }
+
+    .cart-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cart-item-name {
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cart-item-price {
+      color: var(--accent);
+      font-size: 0.85rem;
+    }
+
+    .qty-control {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 5px;
+    }
+
+    .qty-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      border: none;
+      background: var(--primary);
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qty-btn:hover {
+      background: var(--accent);
+      color: #1A120B;
+    }
+
+    .remove-btn {
+      background: transparent;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px;
+      opacity: 0.8;
+    }
+    .remove-btn:hover { opacity: 1; }
+
+    .empty-cart {
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--muted);
+    }
+
+    .empty-cart i {
+      font-size: 3.2rem;
+      margin-bottom: 14px;
+      opacity: 0.35;
+    }
+
+    /* ===== CART SUMMARY ===== */
+    .cart-summary {
+      padding: 16px 18px;
+      border-top: 1px solid var(--border);
+      background: #231910;
+    }
+
+    .customer-info {
+      margin-bottom: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .customer-info input,
+    .customer-info select,
+    .customer-info textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background: #1A120B;
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: none;
+    }
+    .customer-info input:focus,
+    .customer-info select:focus,
+    .customer-info textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 7px;
+      font-size: 0.9rem;
+    }
+
+    .summary-row.total {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #4a3a2a;
+    }
+
+    .pay-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .pay-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(212,163,115,0.35);
+    }
+
+    .pay-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.78);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 92vh;
+      overflow-y: auto;
+      animation: slideUp 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .modal.wide {
+      max-width: 720px;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: var(--card);
+      z-index: 5;
+    }
+
+    .modal-header h3 {
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .close-modal:hover { color: var(--text); }
+
+    .modal-body {
+      padding: 20px 22px;
+    }
+
+    .payment-methods {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .pay-method {
+      padding: 14px 8px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      background: #231910;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .pay-method.active {
+      border-color: var(--accent);
+      background: var(--primary);
+    }
+
+    .pay-method i {
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 11px 13px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background: #1A120B;
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .change-box {
+      background: #1A120B;
+      padding: 14px;
+      border-radius: 12px;
+      margin-top: 14px;
+      text-align: center;
+    }
+
+    .change-box .label {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .change-box .amount {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--success);
+    }
+
+    /* ===== RECEIPT ===== */
+    .receipt {
+      background: #fff;
+      color: #222;
+      padding: 24px;
+      border-radius: 10px;
+      font-family: 'Courier New', monospace;
+      max-width: 320px;
+      margin: 0 auto;
+      font-size: 0.88rem;
+    }
+
+    .receipt-header {
+      text-align: center;
+      margin-bottom: 12px;
+      border-bottom: 2px dashed #ccc;
+      padding-bottom: 10px;
+    }
+
+    .receipt-header h2 {
+      font-size: 1.4rem;
+      margin-bottom: 3px;
+      color: #6F4E37;
+    }
+
+    .receipt-items {
+      margin: 12px 0;
+    }
+
+    .receipt-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .receipt-total {
+      border-top: 2px dashed #ccc;
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+
+    .receipt-footer {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    /* ===== HISTORY & DASHBOARD ===== */
+    .history-list {
+      max-height: 420px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      background: #231910;
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .history-item:hover {
+      background: #2e231a;
+    }
+
+    .history-item .top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .history-item .id {
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 0.9rem;
+    }
+
+    .history-item .date {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* Dashboard cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: #231910;
+      padding: 16px;
+      border-radius: 14px;
+      text-align: center;
+    }
+
+    .stat-card .value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 6px 0 2px;
+    }
+
+    .stat-card .label {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .stat-card i {
+      font-size: 1.3rem;
+      color: var(--primary-light);
+    }
+
+    /* Admin table */
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    .admin-table th,
+    .admin-table td {
+      padding: 10px 8px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .admin-table th {
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.8rem;
+    }
+
+    .admin-table img {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      background: var(--card);
+      color: var(--text);
+      padding: 12px 18px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 260px;
+      animation: toastIn 0.35s ease;
+      border-left: 4px solid var(--success);
+    }
+
+    .toast.error { border-left-color: var(--danger); }
+    .toast.warning { border-left-color: var(--warning); }
+    .toast.info { border-left-color: var(--info); }
+
+    @keyframes toastIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Tabs in modal */
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .main {
+        flex-direction: column;
+        height: auto;
+      }
+      .cart-section {
+        width: 100%;
+        max-height: 48vh;
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+      .products-section {
+        max-height: 52vh;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .payment-methods {
+        grid-template-columns: 1fr;
+      }
+      header {
+        padding: 12px 14px;
+      }
+      .logo {
+        font-size: 1.4rem;
+      }
+      .header-right {
+        gap: 6px;
+      }
+      .btn {
+        padding: 8px 12px;
+        font-size: 0.82rem;
+      }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: #1A120B; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary-light); }
+
+    /* Print */
+    @media print {
+      body * { visibility: hidden; }
+      .receipt, .receipt * { visibility: visible; }
+      .receipt {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <i class="fas fa-mug-hot"></i>
+      <span>Kopiku</span>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-outline btn-sm" onclick="openDashboard()">
+        <i class="fas fa-chart-line"></i> Dashboard
+      </button>
+      <button class="btn btn-outline btn-sm" onclick="openHistory()">
+        <i class="fas fa-history"></i> Riwayat
+      </button>
+      <button class="btn btn-outline btn-sm" onclick="openAdmin()">
+        <i class="fas fa-cog"></i> Admin
+      </button>
+      <button class="btn btn-primary btn-sm" onclick="clearCart()">
+        <i class="fas fa-trash"></i> Kosongkan
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- PRODUCTS -->
+    <div class="products-section">
+      <div class="search-filter">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchInput" placeholder="Cari menu kopi, snack..." oninput="renderProducts()">
+        </div>
+        <div class="categories" id="categories"></div>
+      </div>
+      <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <!-- CART -->
+    <div class="cart-section">
+      <div class="cart-header">
+        <h2><i class="fas fa-shopping-cart"></i> Keranjang</h2>
+        <div class="cart-count" id="cartCount">0</div>
+      </div>
+
+      <div class="cart-items" id="cartItems">
+        <div class="empty-cart">
+          <i class="fas fa-coffee"></i>
+          <p>Keranjang masih kosong<br>Pilih menu favoritmu!</p>
+        </div>
+      </div>
+
+      <div class="cart-summary">
+        <div class="customer-info">
+          <input type="text" id="customerName" placeholder="Nama Pelanggan (opsional)">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <select id="orderType" onchange="toggleTableSelect()">
+              <option value="Dine-in">Dine-in</option>
+              <option value="Takeaway">Takeaway</option>
+            </select>
+            <select id="tableNumber" style="display:block;">
+              <option value="">Pilih Meja</option>
+              <option value="Meja 1">Meja 1</option>
+              <option value="Meja 2">Meja 2</option>
+              <option value="Meja 3">Meja 3</option>
+              <option value="Meja 4">Meja 4</option>
+              <option value="Meja 5">Meja 5</option>
+              <option value="Meja 6">Meja 6</option>
+              <option value="Meja 7">Meja 7</option>
+              <option value="Meja 8">Meja 8</option>
+            </select>
+          </div>
+          <textarea id="orderNote" rows="2" placeholder="Catatan pesanan (opsional)"></textarea>
+        </div>
+
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span id="subtotal">Rp 0</span>
+        </div>
+        <div class="summary-row">
+          <span>Pajak (11%)</span>
+          <span id="tax">Rp 0</span>
+        </div>
+        <div class="summary-row">
+          <span>Diskon</span>
+          <span id="discountDisplay">Rp 0</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span id="grandTotal">Rp 0</span>
+        </div>
+
+        <button class="pay-btn" id="payBtn" disabled onclick="openPayment()">
+          <i class="fas fa-credit-card"></i> Bayar Sekarang
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL PEMBAYARAN -->
+  <div class="modal-overlay" id="paymentModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-wallet"></i> Pembayaran</h3>
+        <button class="close-modal" onclick="closeModal('paymentModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="summary-row total" style="margin-bottom:18px;">
+          <span>Total Tagihan</span>
+          <span id="modalTotal">Rp 0</span>
+        </div>
+
+        <div class="form-group">
+          <label>Diskon (%)</label>
+          <input type="number" id="discountInput" min="0" max="100" value="0" oninput="updateDiscount()">
+        </div>
+
+        <p style="margin-bottom:8px;color:var(--muted);font-size:0.9rem;">Pilih Metode Pembayaran</p>
+        <div class="payment-methods">
+          <div class="pay-method active" data-method="Tunai" onclick="selectMethod(this)">
+            <i class="fas fa-money-bill-wave"></i>
+            Tunai
+          </div>
+          <div class="pay-method" data-method="QRIS" onclick="selectMethod(this)">
+            <i class="fas fa-qrcode"></i>
+            QRIS
+          </div>
+          <div class="pay-method" data-method="Kartu" onclick="selectMethod(this)">
+            <i class="fas fa-credit-card"></i>
+            Kartu
+          </div>
+        </div>
+
+        <div id="cashSection">
+          <div class="form-group">
+            <label>Jumlah Uang Diterima</label>
+            <input type="number" id="cashReceived" placeholder="Masukkan nominal..." oninput="calculateChange()">
+          </div>
+          <div class="change-box">
+            <div class="label">Kembalian</div>
+            <div class="amount" id="changeAmount">Rp 0</div>
+          </div>
+        </div>
+
+        <button class="pay-btn" style="margin-top:18px;" onclick="processPayment()">
+          <i class="fas fa-check-circle"></i> Konfirmasi Pembayaran
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL STRUK -->
+  <div class="modal-overlay" id="receiptModal">
+    <div class="modal" style="max-width:380px;">
+      <div class="modal-header">
+        <h3><i class="fas fa-receipt"></i> Struk Pembayaran</h3>
+        <button class="close-modal" onclick="closeModal('receiptModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="receipt" id="receiptContent"></div>
+        <div style="display:flex;gap:10px;margin-top:18px;">
+          <button class="btn btn-primary" style="flex:1;" onclick="window.print()">
+            <i class="fas fa-print"></i> Cetak
+          </button>
+          <button class="btn btn-outline" style="flex:1;" onclick="closeModal('receiptModal'); clearCart();">
+            <i class="fas fa-check"></i> Selesai
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL RIWAYAT -->
+  <div class="modal-overlay" id="historyModal">
+    <div class="modal wide">
+      <div class="modal-header">
+        <h3><i class="fas fa-history"></i> Riwayat Pesanan</h3>
+        <button class="close-modal" onclick="closeModal('historyModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+          <span style="color:var(--muted);font-size:0.9rem;" id="historyCount">0 transaksi</span>
+          <button class="btn btn-outline btn-sm" onclick="exportHistoryCSV()">
+            <i class="fas fa-file-csv"></i> Export CSV
+          </button>
+        </div>
+        <div class="history-list" id="historyList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DASHBOARD -->
+  <div class="modal-overlay" id="dashboardModal">
+    <div class="modal wide">
+      <div class="modal-header">
+        <h3><i class="fas fa-chart-line"></i> Dashboard Penjualan</h3>
+        <button class="close-modal" onclick="closeModal('dashboardModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="stats-grid" id="statsGrid"></div>
+        <h4 style="margin:16px 0 10px;font-size:1rem;">Produk Terlaris Hari Ini</h4>
+        <div id="bestSellers"></div>
+        <h4 style="margin:20px 0 10px;font-size:1rem;">Transaksi Terbaru</h4>
+        <div class="history-list" id="recentOrders" style="max-height:220px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL ADMIN -->
+  <div class="modal-overlay" id="adminModal">
+    <div class="modal wide">
+      <div class="modal-header">
+        <h3><i class="fas fa-cog"></i> Panel Admin</h3>
+        <button class="close-modal" onclick="closeModal('adminModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchAdminTab('products', this)">Kelola Produk</button>
+          <button class="tab-btn" onclick="switchAdminTab('add', this)">Tambah Produk</button>
+        </div>
+
+        <div id="adminProductsTab">
+          <div style="overflow-x:auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Gambar</th>
+                  <th>Nama</th>
+                  <th>Kategori</th>
+                  <th>Harga</th>
+                  <th>Stok</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="adminProductList"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="adminAddTab" style="display:none;">
+          <form id="productForm" onsubmit="saveProduct(event)">
+            <input type="hidden" id="editProductId">
+            <div class="form-group">
+              <label>Nama Produk</label>
+              <input type="text" id="prodName" required placeholder="Contoh: Cappuccino">
+            </div>
+            <div class="form-group">
+              <label>Kategori</label>
+              <select id="prodCategory" required>
+                <option value="Kopi Hitam">Kopi Hitam</option>
+                <option value="Kopi Susu">Kopi Susu</option>
+                <option value="Kopi Dingin">Kopi Dingin</option>
+                <option value="Non-Kopi">Non-Kopi</option>
+                <option value="Snack">Snack</option>
+                <option value="Spesial">Spesial</option>
+              </select>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="form-group">
+                <label>Harga (Rp)</label>
+                <input type="number" id="prodPrice" required min="0" placeholder="25000">
+              </div>
+              <div class="form-group">
+                <label>Stok</label>
+                <input type="number" id="prodStock" required min="0" value="50" placeholder="50">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>URL Gambar (opsional)</label>
+              <input type="url" id="prodImage" placeholder="https://images.unsplash.com/...">
+              <small style="color:var(--muted);font-size:0.75rem;">Kosongkan untuk pakai gambar default</small>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:8px;">
+              <button type="submit" class="btn btn-primary" style="flex:1;">
+                <i class="fas fa-save"></i> Simpan Produk
+              </button>
+              <button type="button" class="btn btn-outline" onclick="resetProductForm()">Reset</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    // ===== DEFAULT PRODUCTS (dengan gambar Unsplash berkualitas) =====
+    const defaultProducts = [
+      { id: 1, name: "Espresso", category: "Kopi Hitam", price: 18000, stock: 100, image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&h=300&fit=crop" },
+      { id: 2, name: "Americano", category: "Kopi Hitam", price: 22000, stock: 80, image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop" },
+      { id: 3, name: "Cappuccino", category: "Kopi Susu", price: 28000, stock: 90, image: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=400&h=300&fit=crop" },
+      { id: 4, name: "Cafe Latte", category: "Kopi Susu", price: 30000, stock: 85, image: "https://images.unsplash.com/photo-1561882468-9110e03e0f78?w=400&h=300&fit=crop" },
+      { id: 5, name: "Caramel Macchiato", category: "Kopi Susu", price: 35000, stock: 70, image: "https://images.unsplash.com/photo-1485808191679-5f86510681a2?w=400&h=300&fit=crop" },
+      { id: 6, name: "Vanilla Latte", category: "Kopi Susu", price: 33000, stock: 75, image: "https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?w=400&h=300&fit=crop" },
+      { id: 7, name: "Mocha", category: "Kopi Susu", price: 34000, stock: 65, image: "https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?w=400&h=300&fit=crop" },
+      { id: 8, name: "Affogato", category: "Spesial", price: 38000, stock: 40, image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop" },
+      { id: 9, name: "Cold Brew", category: "Kopi Dingin", price: 27000, stock: 60, image: "https://images.unsplash.com/photo-1517701604599-bb87b152cc43?w=400&h=300&fit=crop" },
+      { id: 10, name: "Iced Latte", category: "Kopi Dingin", price: 32000, stock: 70, image: "https://images.unsplash.com/photo-1461023058943-7074cd78b1a0?w=400&h=300&fit=crop" },
+      { id: 11, name: "Iced Americano", category: "Kopi Dingin", price: 25000, stock: 75, image: "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&h=300&fit=crop" },
+      { id: 12, name: "Matcha Latte", category: "Non-Kopi", price: 32000, stock: 55, image: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=400&h=300&fit=crop" },
+      { id: 13, name: "Hot Chocolate", category: "Non-Kopi", price: 28000, stock: 50, image: "https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=400&h=300&fit=crop" },
+      { id: 14, name: "Red Velvet", category: "Non-Kopi", price: 30000, stock: 45, image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=300&fit=crop" },
+      { id: 15, name: "Croissant", category: "Snack", price: 22000, stock: 40, image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&h=300&fit=crop" },
+      { id: 16, name: "Banana Bread", category: "Snack", price: 25000, stock: 35, image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=400&h=300&fit=crop" },
+      { id: 17, name: "Brownies", category: "Snack", price: 20000, stock: 50, image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=400&h=300&fit=crop" },
+      { id: 18, name: "French Fries", category: "Snack", price: 18000, stock: 60, image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&h=300&fit=crop" },
+    ];
+
+    // Fallback image
+    const FALLBACK_IMG = "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop";
+
+    let products = [];
+    let cart = [];
+    let currentCategory = "Semua";
+    let selectedMethod = "Tunai";
+    let discountPercent = 0;
+
+    // ===== INIT =====
+    function init() {
+      loadProducts();
+      renderCategories();
+      renderProducts();
+      updateCartUI();
+      toggleTableSelect();
+    }
+
+    function loadProducts() {
+      const saved = localStorage.getItem("kopiku_products");
+      if (saved) {
+        products = JSON.parse(saved);
+      } else {
+        products = JSON.parse(JSON.stringify(defaultProducts));
+        saveProducts();
+      }
+    }
+
+    function saveProducts() {
+      localStorage.setItem("kopiku_products", JSON.stringify(products));
+    }
+
+    // ===== RENDER PRODUCTS =====
+    function renderCategories() {
+      const cats = ["Semua", ...new Set(products.map(p => p.category))];
+      const container = document.getElementById("categories");
+      container.innerHTML = cats.map(cat => `
+        <button class="cat-btn ${cat === currentCategory ? 'active' : ''}" 
+                onclick="filterCategory('${cat}')">${cat}</button>
+      `).join("");
+    }
+
+    function filterCategory(cat) {
+      currentCategory = cat;
+      renderCategories();
+      renderProducts();
+    }
+
+    function renderProducts() {
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      let filtered = products.filter(p => {
+        const matchCat = currentCategory === "Semua" || p.category === currentCategory;
+        const matchSearch = p.name.toLowerCase().includes(search);
+        return matchCat && matchSearch;
+      });
+
+      const grid = document.getElementById("productsGrid");
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);">
+          <i class="fas fa-search" style="font-size:2.5rem;opacity:0.3;margin-bottom:12px;display:block;"></i>
+          Produk tidak ditemukan
+        </div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(p => {
+        const lowStock = p.stock <= 10;
+        return `
+          <div class="product-card" onclick="addToCart(${p.id})">
+            <div class="product-img-wrap">
+              <img src="${p.image || FALLBACK_IMG}" alt="${p.name}" 
+                   onerror="this.src='${FALLBACK_IMG}'" loading="lazy">
+              <div class="stock-badge ${lowStock ? 'low' : ''}">Stok: ${p.stock}</div>
+            </div>
+            <div class="product-info">
+              <div class="product-name">${p.name}</div>
+              <div class="product-category">${p.category}</div>
+              <div class="product-bottom">
+                <div class="product-price">Rp ${formatNumber(p.price)}</div>
+                <button class="add-btn" ${p.stock <= 0 ? 'disabled' : ''} 
+                        onclick="event.stopPropagation(); addToCart(${p.id})">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ===== CART =====
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      if (!product || product.stock <= 0) {
+        showToast("Stok habis!", "error");
+        return;
+      }
+
+      const existing = cart.find(item => item.id === id);
+      if (existing) {
+        if (existing.qty >= product.stock) {
+          showToast("Stok tidak cukup!", "warning");
+          return;
+        }
+        existing.qty += 1;
+      } else {
+        cart.push({ 
+          id: product.id, 
+          name: product.name, 
+          price: product.price, 
+          image: product.image || FALLBACK_IMG,
+          qty: 1 
+        });
+      }
+      updateCartUI();
+      showToast(`${product.name} ditambahkan`, "success");
+    }
+
+    function changeQty(id, delta) {
+      const item = cart.find(i => i.id === id);
+      if (!item) return;
+      const product = products.find(p => p.id === id);
+      
+      if (delta > 0 && product && item.qty >= product.stock) {
+        showToast("Stok tidak cukup!", "warning");
+        return;
+      }
+
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(i => i.id !== id);
+      }
+      updateCartUI();
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(i => i.id !== id);
+      updateCartUI();
+      showToast("Item dihapus dari keranjang", "info");
+    }
+
+    function clearCart() {
+      if (cart.length === 0) return;
+      cart = [];
+      discountPercent = 0;
+      document.getElementById("customerName").value = "";
+      document.getElementById("orderType").value = "Dine-in";
+      document.getElementById("tableNumber").value = "";
+      document.getElementById("orderNote").value = "";
+      updateCartUI();
+      showToast("Keranjang dikosongkan", "info");
+    }
+
+    function updateCartUI() {
+      const container = document.getElementById("cartItems");
+      const countEl = document.getElementById("cartCount");
+      const payBtn = document.getElementById("payBtn");
+
+      const totalQty = cart.reduce((sum, i) => sum + i.qty, 0);
+      countEl.textContent = totalQty;
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="empty-cart">
+            <i class="fas fa-coffee"></i>
+            <p>Keranjang masih kosong<br>Pilih menu favoritmu!</p>
+          </div>`;
+        payBtn.disabled = true;
+      } else {
+        container.innerHTML = cart.map(item => `
+          <div class="cart-item">
+            <img class="cart-item-img" src="${item.image}" alt="${item.name}" onerror="this.src='${FALLBACK_IMG}'">
+            <div class="cart-item-info">
+              <div class="cart-item-name">${item.name}</div>
+              <div class="cart-item-price">Rp ${formatNumber(item.price)}</div>
+              <div class="qty-control">
+                <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+                <span style="min-width:20px;text-align:center;">${item.qty}</span>
+                <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+              </div>
+            </div>
+            <button class="remove-btn" onclick="removeFromCart(${item.id})" title="Hapus">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        `).join("");
+        payBtn.disabled = false;
+      }
+
+      calculateTotals();
+    }
+
+    function calculateTotals() {
+      const subtotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+      const tax = Math.round(subtotal * 0.11);
+      const discount = Math.round(subtotal * (discountPercent / 100));
+      const total = subtotal + tax - discount;
+
+      document.getElementById("subtotal").textContent = "Rp " + formatNumber(subtotal);
+      document.getElementById("tax").textContent = "Rp " + formatNumber(tax);
+      document.getElementById("discountDisplay").textContent = "Rp " + formatNumber(discount);
+      document.getElementById("grandTotal").textContent = "Rp " + formatNumber(total);
+
+      return { subtotal, tax, discount, total };
+    }
+
+    function toggleTableSelect() {
+      const type = document.getElementById("orderType").value;
+      const tableSelect = document.getElementById("tableNumber");
+      tableSelect.style.display = type === "Dine-in" ? "block" : "none";
+      if (type !== "Dine-in") tableSelect.value = "";
+    }
+
+    // ===== PAYMENT =====
+    function openPayment() {
+      if (cart.length === 0) return;
+      const type = document.getElementById("orderType").value;
+      const table = document.getElementById("tableNumber").value;
+      if (type === "Dine-in" && !table) {
+        showToast("Pilih nomor meja terlebih dahulu!", "warning");
+        return;
+      }
+
+      const { total } = calculateTotals();
+      document.getElementById("modalTotal").textContent = "Rp " + formatNumber(total);
+      document.getElementById("discountInput").value = discountPercent;
+      document.getElementById("cashReceived").value = "";
+      document.getElementById("changeAmount").textContent = "Rp 0";
+      selectMethod(document.querySelector('.pay-method[data-method="Tunai"]'));
+      document.getElementById("paymentModal").classList.add("active");
+    }
+
+    function selectMethod(el) {
+      document.querySelectorAll(".pay-method").forEach(m => m.classList.remove("active"));
+      el.classList.add("active");
+      selectedMethod = el.dataset.method;
+      document.getElementById("cashSection").style.display = selectedMethod === "Tunai" ? "block" : "none";
+    }
+
+    function updateDiscount() {
+      discountPercent = parseFloat(document.getElementById("discountInput").value) || 0;
+      if (discountPercent < 0) discountPercent = 0;
+      if (discountPercent > 100) discountPercent = 100;
+      const { total } = calculateTotals();
+      document.getElementById("modalTotal").textContent = "Rp " + formatNumber(total);
+      calculateChange();
+    }
+
+    function calculateChange() {
+      const { total } = calculateTotals();
+      const received = parseFloat(document.getElementById("cashReceived").value) || 0;
+      const change = received - total;
+      const el = document.getElementById("changeAmount");
+      el.textContent = "Rp " + formatNumber(Math.max(0, change));
+      el.style.color = change >= 0 ? "var(--success)" : "var(--danger)";
+    }
+
+    function processPayment() {
+      const { subtotal, tax, discount, total } = calculateTotals();
+      const received = parseFloat(document.getElementById("cashReceived").value) || 0;
+
+      if (selectedMethod === "Tunai" && received < total) {
+        showToast("Uang yang diterima kurang!", "error");
+        return;
+      }
+
+      // Kurangi stok
+      cart.forEach(item => {
+        const product = products.find(p => p.id === item.id);
+        if (product) {
+          product.stock = Math.max(0, product.stock - item.qty);
+        }
+      });
+      saveProducts();
+
+      const order = {
+        id: "ORD-" + Date.now().toString().slice(-8),
+        date: new Date().toLocaleString("id-ID", { 
+          day: "2-digit", month: "short", year: "numeric",
+          hour: "2-digit", minute: "2-digit"
+        }),
+        timestamp: Date.now(),
+        customer: document.getElementById("customerName").value.trim() || "Pelanggan",
+        type: document.getElementById("orderType").value,
+        table: document.getElementById("tableNumber").value || "-",
+        note: document.getElementById("orderNote").value.trim() || "-",
+        items: cart.map(i => ({ ...i })),
+        subtotal, tax, discount, total,
+        method: selectedMethod,
+        received: selectedMethod === "Tunai" ? received : total,
+        change: selectedMethod === "Tunai" ? Math.max(0, received - total) : 0
+      };
+
+      // Simpan riwayat
+      const history = JSON.parse(localStorage.getItem("kopiku_history") || "[]");
+      history.unshift(order);
+      localStorage.setItem("kopiku_history", JSON.stringify(history.slice(0, 100)));
+
+      showReceipt(order);
+      closeModal("paymentModal");
+      showToast("Pembayaran berhasil!", "success");
+    }
+
+    function showReceipt(order) {
+      const content = document.getElementById("receiptContent");
+      content.innerHTML = `
+        <div class="receipt-header">
+          <h2>☕ KOPIKU</h2>
+          <p>Jl. Kopi Nikmat No. 88<br>Jakarta Selatan<br>Telp: 0812-3456-7890</p>
+          <p style="margin-top:6px;font-size:0.8rem;">${order.date}</p>
+        </div>
+        <p><strong>No:</strong> ${order.id}</p>
+        <p><strong>Pelanggan:</strong> ${order.customer}</p>
+        <p><strong>Tipe:</strong> ${order.type}${order.table !== "-" ? " • " + order.table : ""}</p>
+        ${order.note !== "-" ? `<p><strong>Catatan:</strong> ${order.note}</p>` : ""}
+        <div class="receipt-items">
+          ${order.items.map(i => `
+            <div class="receipt-item">
+              <span>${i.name} x${i.qty}</span>
+              <span>Rp ${formatNumber(i.price * i.qty)}</span>
+            </div>
+          `).join("")}
+        </div>
+        <div class="receipt-total">
+          <div class="receipt-item"><span>Subtotal</span><span>Rp ${formatNumber(order.subtotal)}</span></div>
+          <div class="receipt-item"><span>Pajak 11%</span><span>Rp ${formatNumber(order.tax)}</span></div>
+          <div class="receipt-item"><span>Diskon</span><span>Rp ${formatNumber(order.discount)}</span></div>
+          <div class="receipt-item" style="font-weight:bold;font-size:1.05rem;margin-top:6px;">
+            <span>TOTAL</span><span>Rp ${formatNumber(order.total)}</span>
+          </div>
+          <div class="receipt-item"><span>Metode</span><span>${order.method}</span></div>
+          ${order.method === "Tunai" ? `
+            <div class="receipt-item"><span>Diterima</span><span>Rp ${formatNumber(order.received)}</span></div>
+            <div class="receipt-item"><span>Kembalian</span><span>Rp ${formatNumber(order.change)}</span></div>
+          ` : ""}
+        </div>
+        <div class="receipt-footer">
+          <p>Terima kasih telah berkunjung!</p>
+          <p>Selamat menikmati kopi Anda ☕</p>
+          <p style="margin-top:8px;font-size:0.75rem;">Powered by Kopiku POS</p>
+        </div>
+      `;
+      document.getElementById("receiptModal").classList.add("active");
+    }
+
+    // ===== HISTORY =====
+    function openHistory() {
+      const history = JSON.parse(localStorage.getItem("kopiku_history") || "[]");
+      document.getElementById("historyCount").textContent = history.length + " transaksi";
+      const list = document.getElementById("historyList");
+      
+      if (history.length === 0) {
+        list.innerHTML = `<p style="text-align:center;color:var(--muted);padding:40px;">Belum ada riwayat pesanan</p>`;
+      } else {
+        list.innerHTML = history.map(o => `
+          <div class="history-item" onclick='showReceipt(${JSON.stringify(o).replace(/'/g, "&#39;")})'>
+            <div class="top">
+              <span class="id">${o.id}</span>
+              <span class="date">${o.date}</span>
+            </div>
+            <div style="font-size:0.88rem;">${o.customer} • ${o.type}${o.table !== "-" ? " • " + o.table : ""} • ${o.method}</div>
+            <div style="margin-top:4px;font-weight:600;color:var(--accent);">Rp ${formatNumber(o.total)}</div>
+          </div>
+        `).join("");
+      }
+      document.getElementById("historyModal").classList.add("active");
+    }
+
+    function exportHistoryCSV() {
+      const history = JSON.parse(localStorage.getItem("kopiku_history") || "[]");
+      if (history.length === 0) {
+        showToast("Tidak ada data untuk diexport", "warning");
+        return;
+      }
+
+      let csv = "No,Tanggal,Pelanggan,Tipe,Meja,Metode,Subtotal,Pajak,Diskon,Total,Catatan\n";
+      history.forEach(o => {
+        csv += `"${o.id}","${o.date}","${o.customer}","${o.type}","${o.table}","${o.method}",${o.subtotal},${o.tax},${o.discount},${o.total},"${o.note}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `kopiku_riwayat_${new Date().toISOString().slice(0,10)}.csv`;
+      link.click();
+      showToast("File CSV berhasil diunduh", "success");
+    }
+
+    // ===== DASHBOARD =====
+    function openDashboard() {
+      const history = JSON.parse(localStorage.getItem("kopiku_history") || "[]");
+      const today = new Date().toDateString();
+      const todayOrders = history.filter(o => new Date(o.timestamp).toDateString() === today);
+
+      const todayRevenue = todayOrders.reduce((s, o) => s + o.total, 0);
+      const todayCount = todayOrders.length;
+      const totalRevenue = history.reduce((s, o) => s + o.total, 0);
+      const totalCount = history.length;
+
+      // Best sellers today
+      const itemCount = {};
+      todayOrders.forEach(o => {
+        o.items.forEach(i => {
+          itemCount[i.name] = (itemCount[i.name] || 0) + i.qty;
+        });
+      });
+      const bestSellers = Object.entries(itemCount)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+      document.getElementById("statsGrid").innerHTML = `
+        <div class="stat-card">
+          <i class="fas fa-coins"></i>
+          <div class="value">Rp ${formatNumber(todayRevenue)}</div>
+          <div class="label">Pendapatan Hari Ini</div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-receipt"></i>
+          <div class="value">${todayCount}</div>
+          <div class="label">Transaksi Hari Ini</div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-chart-bar"></i>
+          <div class="value">Rp ${formatNumber(totalRevenue)}</div>
+          <div class="label">Total Pendapatan</div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-shopping-bag"></i>
+          <div class="value">${totalCount}</div>
+          <div class="label">Total Transaksi</div>
+        </div>
+      `;
+
+      document.getElementById("bestSellers").innerHTML = bestSellers.length === 0
+        ? `<p style="color:var(--muted);font-size:0.9rem;">Belum ada penjualan hari ini</p>`
+        : bestSellers.map(([name, qty], i) => `
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+              <span>${i + 1}. ${name}</span>
+              <span style="color:var(--accent);font-weight:600;">${qty} terjual</span>
+            </div>
+          `).join("");
+
+      document.getElementById("recentOrders").innerHTML = history.slice(0, 8).map(o => `
+        <div class="history-item" style="cursor:default;">
+          <div class="top">
+            <span class="id">${o.id}</span>
+            <span class="date">${o.date}</span>
+          </div>
+          <div style="font-size:0.85rem;">${o.customer} • Rp ${formatNumber(o.total)}</div>
+        </div>
+      `).join("") || `<p style="color:var(--muted);">Belum ada transaksi</p>`;
+
+      document.getElementById("dashboardModal").classList.add("active");
+    }
+
+    // ===== ADMIN =====
+    function openAdmin() {
+      renderAdminProducts();
+      switchAdminTab("products", document.querySelector(".tab-btn"));
+      document.getElementById("adminModal").classList.add("active");
+    }
+
+    function switchAdminTab(tab, btn) {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+      
+      document.getElementById("adminProductsTab").style.display = tab === "products" ? "block" : "none";
+      document.getElementById("adminAddTab").style.display = tab === "add" ? "block" : "none";
+      
+      if (tab === "add") resetProductForm();
+    }
+
+    function renderAdminProducts() {
+      const tbody = document.getElementById("adminProductList");
+      tbody.innerHTML = products.map(p => `
+        <tr>
+          <td><img src="${p.image || FALLBACK_IMG}" onerror="this.src='${FALLBACK_IMG}'"></td>
+          <td>${p.name}</td>
+          <td>${p.category}</td>
+          <td>Rp ${formatNumber(p.price)}</td>
+          <td style="color:${p.stock <= 10 ? 'var(--danger)' : 'inherit'}">${p.stock}</td>
+          <td>
+            <div class="admin-actions">
+              <button class="btn btn-sm btn-outline" onclick="editProduct(${p.id})" title="Edit">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" onclick="deleteProduct(${p.id})" title="Hapus">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function editProduct(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      document.getElementById("editProductId").value = p.id;
+      document.getElementById("prodName").value = p.name;
+      document.getElementById("prodCategory").value = p.category;
+      document.getElementById("prodPrice").value = p.price;
+      document.getElementById("prodStock").value = p.stock;
+      document.getElementById("prodImage").value = p.image || "";
+      
+      // Switch to add tab
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-btn")[1].classList.add("active");
+      document.getElementById("adminProductsTab").style.display = "none";
+      document.getElementById("adminAddTab").style.display = "block";
+    }
+
+    function deleteProduct(id) {
+      if (!confirm("Yakin ingin menghapus produk ini?")) return;
+      products = products.filter(p => p.id !== id);
+      saveProducts();
+      renderAdminProducts();
+      renderCategories();
+      renderProducts();
+      showToast("Produk berhasil dihapus", "success");
+    }
+
+    function saveProduct(e) {
+      e.preventDefault();
+      const id = document.getElementById("editProductId").value;
+      const name = document.getElementById("prodName").value.trim();
+      const category = document.getElementById("prodCategory").value;
+      const price = parseInt(document.getElementById("prodPrice").value);
+      const stock = parseInt(document.getElementById("prodStock").value);
+      const image = document.getElementById("prodImage").value.trim() || FALLBACK_IMG;
+
+      if (id) {
+        // Update
+        const p = products.find(x => x.id == id);
+        if (p) {
+          p.name = name;
+          p.category = category;
+          p.price = price;
+          p.stock = stock;
+          p.image = image;
+        }
+        showToast("Produk berhasil diperbarui", "success");
+      } else {
+        // Add new
+        const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+        products.push({ id: newId, name, category, price, stock, image });
+        showToast("Produk berhasil ditambahkan", "success");
+      }
+
+      saveProducts();
+      renderAdminProducts();
+      renderCategories();
+      renderProducts();
+      resetProductForm();
+      switchAdminTab("products", document.querySelector(".tab-btn"));
+    }
+
+    function resetProductForm() {
+      document.getElementById("productForm").reset();
+      document.getElementById("editProductId").value = "";
+      document.getElementById("prodStock").value = 50;
+    }
+
+    // ===== HELPERS =====
+    function closeModal(id) {
+      document.getElementById(id).classList.remove("active");
+    }
+
+    function formatNumber(num) {
+      return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    function showToast(message, type = "success") {
+      const container = document.getElementById("toastContainer");
+      const toast = document.createElement("div");
+      toast.className = `toast ${type}`;
+      const icons = {
+        success: "fa-check-circle",
+        error: "fa-exclamation-circle",
+        warning: "fa-exclamation-triangle",
+        info: "fa-info-circle"
+      };
+      toast.innerHTML = `<i class="fas ${icons[type] || icons.success}"></i> <span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateX(100%)";
+        toast.style.transition = "all 0.3s";
+        setTimeout(() => toast.remove(), 300);
+      }, 2800);
+    }
+
+    // Tutup modal saat klik di luar
+    document.querySelectorAll(".modal-overlay").forEach(overlay => {
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) overlay.classList.remove("active");
+      });
+    });
+
+    // Start
+    init();
+  </script>
+</body>
+</html>
